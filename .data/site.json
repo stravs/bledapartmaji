@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "site": {
+    "slug": "bled-vista",
+    "locale": "en",
+    "url": "https://www.bledapartmaji.si/"
+  },
+  "design": {
+    "colors": {
+      "primary": "#283f35",
+      "accent": "#94663f",
+      "background": "#f7f5ef",
+      "surface": "#eae8dd",
+      "text": "#25382f",
+      "muted": "#62695f"
+    },
+    "fonts": {
+      "heading": "Georgia",
+      "body": "Arial"
+    },
+    "edges": "soft",
+    "gallery": "editorial",
+    "hero": "overlay",
+    "units": "grid",
+    "amenities": "band",
+    "contact": "banner"
+  },
+  "sections": [
+    "intro",
+    "units",
+    "amenities",
+    "location",
+    "contact"
+  ],
+  "contact": {
+    "type": "personal"
+  },
+  "guestGuide": false
+}

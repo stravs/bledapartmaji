@@ -1,0 +1,70 @@
+---
+import StayGallery from './StayGallery.astro';
+import type { PropertyUnit } from '../domain/property';
+import integrations from '../../.data/bentral.json';
+import { unitDetails } from '../config/unit-details';
+interface Props { unit: PropertyUnit; locale: 'en'|'sl'; index: number }
+const {unit:u,locale,index}=Astro.props;
+const t=(en:string,sl:string)=>locale==='sl'?sl:en;
+const title=(locale==='sl'?u.name:u.name.replace('Apartma','Apartment').replace('soba','room').replace('Soba','Room')).replace(/ \(.*\)/,'');
+const integration=integrations[u.id as keyof typeof integrations];
+const booking=new URL(integration.bookingEmbed); booking.searchParams.set('lang',locale);
+const details=unitDetails[u.id as keyof typeof unitDetails];
+const sova=details.property==='sova';
+const balcony=details.balcony;
+const ground=details.floor===0;
+const terrace=details.outdoorArea;
+const address=sova?'Ljubljanska cesta 33, Bled':'Finžgarjeva cesta 23A, 4260 Bled';
+const description=u.id==='nastanitev-soba-b'?t('A compact ground-floor room for two, with access to a shared terrace and an entrance shared with other guests.','Kompaktna pritlična soba za dva z dostopom do skupne terase in vhodom, ki se deli z drugimi gosti.'):balcony?t('Your own first-floor apartment with a kitchen, private entrance and a balcony for a breath of fresh alpine air.','Vaš apartma v prvem nadstropju s kuhinjo, lastnim vhodom in balkonom za svež alpski zrak.'):u.id==='bled-vista-apartma-4'?t('A cosy first-floor apartment with a kitchen and private entrance. No balcony, but a shared terrace for relaxing outdoors.','Prijeten apartma v prvem nadstropju s kuhinjo in lastnim vhodom. Nima balkona, za sproščanje na prostem pa je na voljo skupna terasa.'):u.id==='apartma-sova'?t('A ground-floor apartment with a kitchen, private entrance and terrace. Capacity for two plus one additional guest.','Pritlični apartma s kuhinjo, lastnim vhodom in teraso. Prostor za dve osebi in enega dodatnega gosta.'):t('An intimate ground-floor room for two, with its own entrance, bathroom and terrace.','Prijetna pritlična soba za dva z lastnim vhodom, kopalnico in teraso.');
+const amenities=[
+ t('Wi-Fi','Wi-Fi'), t('Air conditioning','Klimatska naprava'),
+ t('Refrigerator','Hladilnik'), t('Satellite TV','Satelitski TV program'),
+ ...(details.standardTv?[t('Standard TV channels','Navaden TV program')]:[]),
+ ...(details.kitchen?[t('Kitchen','Kuhinja')]:[]),
+ ...(balcony?[t('Balcony','Balkon')]:[]),
+ details.sharedTerrace?t('Shared terrace','Skupna terasa'):t('Terrace','Terasa'),
+ ...(details.cot?[t('Baby cot','Otroška posteljica')]:[]),
+ ...(details.extraBed?[t('Additional bed','Dodatno pomožno ležišče')]:[]),
+];
+---
+<article class="stay-showcase" id={u.id}>
+{u.photos.length ? <StayGallery photos={u.photos} title={title} locale={locale} id={u.id}/>:<div class="stay-no-photo"><span>B</span><h4>{t('Room for two.','Prostor za dva.')}</h4><p>{t('Photos coming soon. Contact us for a closer look.','Fotografije še niso na voljo. Za več informacij nas kontaktirajte.')}</p><a class="text-link" href="#contact">{t('Ask about this room','Vprašajte o tej sobi')} ↗</a></div>}
+<div class="stay-copy"><p class="eyebrow">{String(index+1).padStart(2,'0')} / {sova?t('APARTMENT SOVA','APARTMA SOVA'):'BLED VISTA APARTMENTS'} · {ground?t('GROUND FLOOR','PRITLIČJE'):t('FIRST FLOOR','1. NADSTROPJE')}</p><h4>{title}</h4><p class="outdoor-note">{address}</p><p class="stay-description">{description}</p>
+<dl class="stay-facts"><div><dt>{t('Space','Velikost')}</dt><dd>{details.area} <small>m²</small></dd></div><div><dt>{t('Guests','Gostje')}</dt><dd>{details.capacity.replace('+0','').replace('+',' + ')}</dd></div><div><dt>{t('Bedroom','Spalnica')}</dt><dd>{details.bedrooms}</dd></div><div><dt>{t('Bathroom','Kopalnica')}</dt><dd>{details.bathrooms}</dd></div></dl>
+<ul class="stay-amenities">{amenities.map(a=><li><span aria-hidden="true">✓</span> {a}</li>)}</ul><p class="outdoor-note">{terrace} m² {balcony?t('terrace / balcony','terasa / balkon'):t('terrace','terasa')}{details.sharedTerrace?t(' · terrace shared with other guests',' · terasa v souporabi'):''}</p>
+<details class="stay-extra-details"><summary>{t('Access, services & house rules','Dostop, storitve in hišni red')}</summary><ul>
+<li>{details.sharedEntrance?t('Entrance shared with other guests.','Vhod se deli z drugimi gosti.'):t('Private entrance.','Lasten vhod.')}</li>
+<li>{t('Pets are not allowed.','Hišni ljubljenčki niso dovoljeni.')}</li>
+<li>{t('Smoking is permitted on the terrace.','Kajenje je dovoljeno na terasi.')}</li>
+<li>{t('Tourist tax is listed for adults and children. Confirm the applicable charges when booking.','Turistična taksa za odrasle in otroke je navedena med storitvami ob rezervaciji.')}</li>
+{details.breakfast&&<li>{t('Breakfast is listed as a meal option. Please confirm availability and price when booking.','Zajtrk je naveden med možnostmi prehrane. Razpoložljivost in ceno preverite ob rezervaciji.')}</li>}
+</ul></details>
+<a class="button stay-book" href={booking.href} target="_blank" rel="noopener" data-booking-dialog={'booking-'+u.id}>{t('Check availability & book','Preverite razpoložljivost')} <span>↗</span></a>
+</div>
+<dialog class="booking-dialog" id={'booking-'+u.id} aria-labelledby={'booking-title-'+u.id}><div class="booking-dialog-head"><div><p class="eyebrow">{t('DIRECT BOOKING · BENTRAL','DIREKTNA REZERVACIJA · BENTRAL')}</p><h3 id={'booking-title-'+u.id}>{title}</h3></div><button type="button" data-close aria-label={t('Close booking','Zapri rezervacijo')}>×</button></div><p class="booking-help">{t('Choose your dates below. This form is provided by Bentral.','Izberite datume spodaj. Obrazec zagotavlja Bentral.')} <a href={booking.href} target="_blank" rel="noopener">{t('Open in a new tab ↗','Odpri v novem zavihku ↗')}</a></p><iframe data-src={booking.href} title={t(`Bentral booking — ${title}`,`Bentral rezervacija — ${title}`)} referrerpolicy="strict-origin-when-cross-origin"></iframe><p class="booking-help">{t('Form not loading?','Se obrazec ne naloži?')} <a href={integration.sourceUrl} target="_blank" rel="noopener">{t('Book on the existing website ↗','Rezervirajte na obstoječi spletni strani ↗')}</a></p></dialog>
+</article>
+<script>
+document.querySelectorAll<HTMLAnchorElement>('[data-booking-dialog]').forEach(link=>{
+ const dialog=document.getElementById(link.dataset.bookingDialog||'') as HTMLDialogElement|null;
+ if(!dialog)return;
+ link.addEventListener('click',event=>{
+  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();
+  const frame=dialog.querySelector('iframe');
+  if(frame&&!frame.hasAttribute('src')&&frame.dataset.src)frame.src=frame.dataset.src;
+  dialog.showModal();document.body.classList.add('booking-open');
+ });
+ dialog.querySelector('[data-close]')?.addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('close',()=>{document.body.classList.remove('booking-open');link.focus();});
+ dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
+});
+// Bentral sends "<frame hash>_<height>". Accept only its origin and the matching iframe.
+window.addEventListener('message',event=>{
+ if(event.origin!=='https://www.bentral.com'||typeof event.data!=='string')return;
+ const match=event.data.match(/^[a-f0-9]{32}_(\d+)$/i);if(!match)return;
+ const height=Number(match[1]);if(!Number.isFinite(height)||height<100||height>10000)return;
+ document.querySelectorAll<HTMLIFrameElement>('.booking-dialog iframe').forEach(frame=>{
+  if(event.source===frame.contentWindow)frame.style.height=`${height+30}px`;
+ });
+});
+</script>

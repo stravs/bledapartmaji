@@ -1,0 +1,65 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { localImage } from '../config/images';
+interface Props { photos: { url: string }[]; title: string; locale: 'en' | 'sl'; id: string }
+const {photos,title,locale,id}=Astro.props;
+const t=(en:string,sl:string)=>locale==='sl'?sl:en;
+const gallerySizes='(max-width: 700px) 88vw, (max-width: 1000px) 42vw, 650px';
+const optimized=await Promise.all(photos.map(async photo=>{
+ const source=localImage(photo.url);
+ const main=await getImage({src:source,width:960,widths:[400,640,960],format:'webp'});
+ const full=await getImage({src:source,width:Math.min(source.width,1920),format:'webp'});
+ return {source,main,full};
+}));
+const firstPhoto=optimized[0]!;
+---
+<div class="stay-gallery" data-gallery>
+  <div class="gallery-stage">
+    <a class="stay-main-photo" href={firstPhoto.full.src} aria-label={t(`Open ${title} gallery`,`Odpri galerijo: ${title}`)}><Image src={firstPhoto.source} width={960} widths={[400,640,960]} sizes={gallerySizes} format="webp" alt={`${title} — ${t('photo','fotografija')} 1`} loading="lazy"/><span class="gallery-expand" aria-hidden="true">↗</span></a>
+    <button class="gallery-arrow gallery-prev" type="button" data-prev aria-label={t('Previous photo','Prejšnja fotografija')}>‹</button>
+    <button class="gallery-arrow gallery-next" type="button" data-next aria-label={t('Next photo','Naslednja fotografija')}>›</button>
+  </div>
+  <div class="gallery-toolbar"><span>{t('A closer look','Poglejte pobliže')}</span><span data-counter aria-live="polite">1 / {photos.length}</span></div>
+  <div class="stay-thumbnails" role="group" aria-label={t(`${title} photos`,`${title}: fotografije`)}>
+    {optimized.map((p,i)=><button type="button" data-photo={p.main.src} data-srcset={p.main.srcSet.attribute} data-full={p.full.src} aria-pressed={i===0?'true':'false'} aria-label={`${title} — ${t('photo','fotografija')} ${i+1}`}><Image src={p.source} width={160} widths={[80,160,240]} sizes="(max-width: 700px) 20vw, 90px" format="webp" alt="" loading="lazy"/></button>)}
+  </div>
+  <dialog class="stay-lightbox" aria-labelledby={'gallery-title-'+id}>
+    <div class="lightbox-header"><p id={'gallery-title-'+id}>{title} · <span data-lightbox-counter aria-live="polite">1 / {photos.length}</span></p><button type="button" data-gallery-close aria-label={t('Close gallery','Zapri galerijo')} autofocus>×</button></div>
+    <div class="lightbox-stage"><button type="button" class="gallery-arrow gallery-prev" data-prev aria-label={t('Previous photo','Prejšnja fotografija')}>‹</button><img data-lightbox-image src={firstPhoto.full.src} width={firstPhoto.full.attributes.width} height={firstPhoto.full.attributes.height} alt={`${title} — ${t('photo','fotografija')} 1`} loading="lazy"/><button type="button" class="gallery-arrow gallery-next" data-next aria-label={t('Next photo','Naslednja fotografija')}>›</button></div>
+  </dialog>
+</div>
+<script>
+document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(gallery=>{
+ const main=gallery.querySelector<HTMLAnchorElement>('.stay-main-photo')!;
+ const image=main.querySelector('img')!;
+ const buttons=Array.from(gallery.querySelectorAll<HTMLButtonElement>('[data-photo]'));
+ const dialog=gallery.querySelector<HTMLDialogElement>('dialog')!;
+ const enlarged=dialog.querySelector<HTMLImageElement>('[data-lightbox-image]')!;
+ let index=0;
+ function show(next:number){
+  index=(next+buttons.length)%buttons.length;
+  const button=buttons[index]!;
+  main.href=enlarged.src=button.dataset.full!;
+  image.srcset=button.dataset.srcset!;
+  image.src=button.dataset.photo!;
+  image.alt=enlarged.alt=button.getAttribute('aria-label')!;
+  buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
+  gallery.querySelectorAll('[data-counter],[data-lightbox-counter]').forEach(c=>c.textContent=`${index+1} / ${buttons.length}`);
+ }
+ buttons.forEach((button,i)=>button.addEventListener('click',()=>show(i)));
+ gallery.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click',()=>show(index-1)));
+ gallery.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>show(index+1)));
+ main.addEventListener('click',event=>{
+  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();dialog.showModal();document.body.classList.add('gallery-open');
+ });
+ dialog.querySelector('[data-gallery-close]')!.addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('close',()=>{document.body.classList.remove('gallery-open');main.focus({preventScroll:true});});
+ dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+ gallery.addEventListener('keydown',event=>{
+  if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
+   event.preventDefault();show(index+(event.key==='ArrowRight'?1:-1));
+  }
+ });
+});
+</script>

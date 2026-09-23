@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bled Vista — Prototype C · Clear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111819; --ink-2:#3D4A4C; --muted:#6B787A;
+  --bg:#FFFFFF; --soft:#F3F6F5; --soft-2:#E8EEEC; --line:#DCE4E2;
+  --lake:#0E6A60; --lake-2:#0B564E; --lake-soft:#E3F1EE; --amber:#C2712C;
+  --r:14px; --shadow:0 1px 2px #0f171a0d,0 8px 24px #0f171a0a;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+h1{font-size:clamp(38px,4.6vw,60px);letter-spacing:-.04em}
+h2{font-size:clamp(28px,3.1vw,42px)}
+h3{font-size:clamp(20px,1.7vw,24px);letter-spacing:-.02em}
+h4{font-size:19px;letter-spacing:-.02em}
+p{margin:0 0 1em}
+.wrap{width:min(1200px,92vw);margin-inline:auto}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lake);margin:0 0 14px}
+.lede{font-size:clamp(16px,1.3vw,18.5px);color:var(--ink-2);line-height:1.65}
+.muted{color:var(--muted)}
+svg.i{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* header */
+.head{position:sticky;top:0;z-index:50;background:#ffffffF2;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.head .wrap{display:flex;align-items:center;gap:30px;height:72px}
+.brand{margin-right:auto;display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.03em;font-size:19px}
+.brand i{width:32px;height:32px;border-radius:9px;background:var(--lake);display:grid;place-items:center;color:#fff;font-style:normal;font-size:14px;font-weight:700}
+.head nav{display:flex;gap:26px;font-size:14.5px;color:var(--ink-2);font-weight:500}
+.head nav a:hover{color:var(--lake)}
+.tel{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:14.5px;font-weight:600;padding:12px 20px;border-radius:10px;background:var(--lake);color:#fff;transition:.2s;border:1px solid var(--lake)}
+.btn:hover{background:var(--lake-2);border-color:var(--lake-2)}
+.btn-ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{background:var(--soft);border-color:var(--muted)}
+.btn-sm{padding:10px 16px;font-size:13.5px;border-radius:9px}
+.btn-full{width:100%}
+
+/* hero */
+.hero{padding:clamp(44px,5vw,72px) 0 clamp(40px,5vw,64px)}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.02fr;gap:clamp(32px,4.5vw,64px);align-items:center}
+.hero h1{max-width:13ch}
+.hero .lede{max-width:44ch;margin:20px 0 26px}
+.trust{display:flex;flex-wrap:wrap;gap:10px 22px;list-style:none;padding:0;margin:0 0 30px;font-size:14px;color:var(--ink-2);font-weight:500}
+.trust li{display:flex;align-items:center;gap:8px}
+.trust svg{color:var(--lake)}
+.collage{display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:clamp(320px,38vw,470px)}
+.collage div{overflow:hidden;border-radius:var(--r);background:var(--soft-2)}
+.collage div:first-child{grid-row:1/3}
+
+/* search card */
+.search{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;display:grid;grid-template-columns:1fr 1fr .8fr auto;gap:10px;align-items:end}
+.field{padding:8px 12px;border-radius:10px;background:var(--soft)}
+.field span{display:block;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.field b{font-size:15px;font-weight:600}
+
+/* strip */
+.strip{background:var(--soft);border-radius:var(--r);display:grid;grid-template-columns:repeat(4,1fr);gap:1px;overflow:hidden}
+.strip div{background:var(--soft);padding:22px 24px}
+.strip b{display:block;font-size:22px;font-weight:600;letter-spacing:-.03em}
+.strip span{font-size:13px;color:var(--muted)}
+
+section{padding:clamp(52px,6.5vw,92px) 0}
+.s-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:26px}
+.s-head .lede{max-width:46ch;margin:14px 0 0}
+
+/* filters */
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:26px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:500;color:var(--ink-2);transition:.18s;white-space:nowrap}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--lake);border-color:var(--lake);color:#fff}
+.chip small{opacity:.65;margin-left:6px;font-size:12px}
+
+/* unit grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.8vw,24px)}
+.card{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:.22s}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.card-ph{aspect-ratio:4/3;position:relative;background:var(--soft-2)}
+.badge{position:absolute;top:12px;left:12px;background:#ffffffF0;border-radius:7px;padding:5px 10px;font-size:11.5px;font-weight:600;letter-spacing:.02em}
+.badge.warm{background:#FCEFE2F2;color:var(--amber)}
+.no-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--lake-soft);color:var(--lake-2);text-align:center;padding:20px}
+.no-ph b{font-size:17px;font-weight:600}
+.no-ph span{font-size:12.5px;color:var(--ink-2)}
+.card-body{padding:18px;display:flex;flex-direction:column;flex:1;gap:14px}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card-top span{font-size:13px;color:var(--muted);white-space:nowrap}
+.card p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.55}
+.stats{display:flex;flex-wrap:wrap;gap:8px 14px;list-style:none;padding:0;margin:0;font-size:13.5px;color:var(--ink-2)}
+.stats li{display:flex;align-items:center;gap:6px}
+.stats svg{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.tags li{font-size:12px;background:var(--soft);border-radius:6px;padding:4px 9px;color:var(--ink-2)}
+.card-foot{margin-top:auto;display:flex;gap:9px;align-items:center}
+.card-foot .btn{flex:1}
+.link{font-size:13.5px;font-weight:600;color:var(--lake);white-space:nowrap}
+.link:hover{color:var(--lake-2)}
+
+/* amenities */
+.amen-band{background:var(--soft);border-radius:var(--r);padding:clamp(26px,3.4vw,44px)}
+.amen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:24px}
+.amen-grid div{display:flex;gap:12px;align-items:flex-start}
+.amen-grid i{width:38px;height:38px;border-radius:10px;background:#fff;display:grid;place-items:center;color:var(--lake);flex:none;border:1px solid var(--line)}
+.amen-grid b{display:block;font-size:15px;font-weight:600}
+.amen-grid span{font-size:13.5px;color:var(--muted);line-height:1.5}
+
+/* location */
+.loc{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);align-items:center}
+.loc-media{aspect-ratio:16/10;border-radius:var(--r);overflow:hidden}
+.dist{list-style:none;padding:0;margin:22px 0 26px}
+.dist li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink-2)}
+.dist b{font-weight:600;color:var(--ink)}
+
+/* faq */
+.faq{max-width:780px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:600;font-size:16.5px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--lake);font-size:22px;font-weight:400;line-height:1}
+details[open] summary::after{content:'–'}
+details p{padding:0 0 20px;color:var(--ink-2);font-size:15px;max-width:66ch}
+
+/* cta */
+.cta{background:var(--lake);color:#fff;border-radius:var(--r);padding:clamp(32px,4.5vw,60px);display:grid;grid-template-columns:1.1fr auto;gap:30px;align-items:center}
+.cta h2{max-width:18ch}
+.cta p{color:#CFE5E1;max-width:46ch;margin:14px 0 0}
+.cta .btn{background:#fff;color:var(--lake-2);border-color:#fff}
+.cta .btn:hover{background:var(--lake-soft);border-color:var(--lake-soft)}
+.cta .tel{color:#fff;font-size:26px;letter-spacing:-.03em;justify-content:flex-end}
+
+footer{border-top:1px solid var(--line);padding:34px 0 52px;font-size:13.5px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.proto-tag{position:fixed;left:16px;bottom:16px;z-index:60;background:var(--ink);color:#fff;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;border-radius:999px}
+
+@media(max-width:1000px){
+  .head nav,.head .tel{display:none}
+  .hero .wrap,.loc,.cta{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .amen-grid{grid-template-columns:repeat(2,1fr)}
+  .strip{grid-template-columns:1fr 1fr}
+  .search{grid-template-columns:1fr 1fr}
+  .search .btn{grid-column:1/-1}
+  .cta .tel{justify-content:flex-start}
+}
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .collage{grid-template-columns:1fr 1fr;height:280px}
+  .collage div:first-child{grid-row:1/2;grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<header class="head">
+  <div class="wrap">
+    <a class="brand" href="#top"><i>BV</i> Bled Vista</a>
+    <nav><a href="#stays">Stays</a><a href="#amenities">What's included</a><a href="#location">Location</a><a href="#faq">FAQ</a></nav>
+    <a class="tel" href="tel:+38631759164"><svg class="i" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg>+386 31 759 164</a>
+    <a class="btn btn-sm" href="#stays">Check availability</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="kicker">Bled · Slovenia</p>
+        <h1>Apartments and rooms on the quiet side of Bled.</h1>
+        <p class="lede">Seven self-catering stays with private entrances, free parking and a shared terrace under the vines. Book direct with the owners — no booking fees.</p>
+        <ul class="trust">
+          <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Free private parking</li>
+          <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Own entrance &amp; kitchen</li>
+          <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Family-run since day one</li>
+        </ul>
+        <form class="search" onsubmit="return false">
+          <label class="field"><span>Arrival</span><b>Fri 3 Jul</b></label>
+          <label class="field"><span>Departure</span><b>Mon 6 Jul</b></label>
+          <label class="field"><span>Guests</span><b>2</b></label>
+          <button class="btn" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="collage">
+        <div><img src="images/bled/header.jpg" alt="Lake Bled at dusk" fetchpriority="high"></div>
+        <div><img src="images/bled/property-0.jpg" alt="Shared terrace" loading="lazy"></div>
+        <div><img src="images/bled/bled-vista-apartma-2-0.jpg" alt="Apartment bedroom" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="strip">
+      <div><b>7</b><span>rooms &amp; apartments</span></div>
+      <div><b>11–37 m²</b><span>studio to one-bedroom</span></div>
+      <div><b>≈ 1.5 km</b><span>to the lake shore</span></div>
+      <div><b>0 €</b><span>booking fee, direct</span></div>
+    </div>
+  </div>
+
+  <section id="stays">
+    <div class="wrap">
+      <div class="s-head">
+        <div>
+          <p class="kicker">Choose your stay</p>
+          <h2>Seven stays, all with their own front door</h2>
+          <p class="lede">Four apartments and one room in the main house, plus two more at Apartmaji Sova around the corner.</p>
+        </div>
+        <a class="link" href="#faq">How booking works →</a>
+      </div>
+
+      <div class="chips" id="chips">
+        <button class="chip" aria-pressed="true" data-filter="all">All stays <small>7</small></button>
+        <button class="chip" aria-pressed="false" data-filter="apartment">Apartments <small>5</small></button>
+        <button class="chip" aria-pressed="false" data-filter="room">Rooms <small>2</small></button>
+        <button class="chip" aria-pressed="false" data-filter="balcony">With balcony <small>3</small></button>
+        <button class="chip" aria-pressed="false" data-filter="three">For 3 guests <small>3</small></button>
+        <button class="chip" aria-pressed="false" data-filter="ground">Ground floor <small>3</small></button>
+      </div>
+
+      <div class="grid" id="grid">
+        <article class="card" data-tags="apartment balcony">
+          <div class="card-ph"><img src="images/bled/bled-vista-apartma-1-0.jpg" alt="Apartment 1" loading="lazy"><span class="badge">Bled Vista</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Apartment 1</h4><span>29 m²</span></div>
+            <p>One-bedroom apartment for two with a full kitchen, private entrance and a 5 m² balcony.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>2 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 bedroom</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Kitchen</li><li>Balcony</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="apartment balcony three">
+          <div class="card-ph"><img src="images/bled/bled-vista-apartma-2-0.jpg" alt="Apartment 2" loading="lazy"><span class="badge">Bled Vista</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Apartment 2</h4><span>37 m²</span></div>
+            <p>Our largest apartment — separate bedroom, full kitchen and a 10 m² balcony over the garden.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>3 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 bedroom</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Kitchen</li><li>Balcony</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="apartment balcony three">
+          <div class="card-ph"><img src="images/bled/bled-vista-apartma-3-0.jpg" alt="Apartment 3" loading="lazy"><span class="badge">Bled Vista</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Apartment 3</h4><span>37 m²</span></div>
+            <p>Same layout as Apartment 2 on the quiet side of the house, with a 7 m² balcony.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>3 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 bedroom</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Kitchen</li><li>Balcony</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="apartment">
+          <div class="card-ph"><img src="images/bled/bled-vista-apartma-4-0.jpg" alt="Apartment 4" loading="lazy"><span class="badge">Bled Vista</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Apartment 4</h4><span>23 m²</span></div>
+            <p>Compact apartment for two with a kitchen and private entrance. Shared terrace instead of a balcony.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>2 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 bedroom</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Kitchen</li><li>Shared terrace</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="room ground">
+          <div class="card-ph"><div class="no-ph"><b>Photos on request</b><span>We'll send them by email or WhatsApp</span></div><span class="badge">Bled Vista</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Room B</h4><span>12 m²</span></div>
+            <p>Compact ground-floor room for two with a private bathroom and access to a 16 m² shared terrace.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>2 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 room</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Shared terrace</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Ask us</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="apartment ground three">
+          <div class="card-ph"><img src="images/bled/apartma-sova-0.jpg" alt="Apartment Sova terrace" loading="lazy"><span class="badge warm">Apartmaji Sova</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Apartment Sova</h4><span>24 m²</span></div>
+            <p>Ground-floor apartment with a kitchen, private entrance and its own 15 m² terrace. Two guests plus one.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>2 + 1 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 bedroom</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Kitchen</li><li>Private terrace</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+
+        <article class="card" data-tags="room ground">
+          <div class="card-ph"><img src="images/bled/deluxe-soba-33-0.jpg" alt="Deluxe room 33" loading="lazy"><span class="badge warm">Apartmaji Sova</span></div>
+          <div class="card-body">
+            <div class="card-top"><h4>Deluxe Room 33</h4><span>11 m²</span></div>
+            <p>An intimate room for two with its own entrance, bathroom and a small terrace outside the door.</p>
+            <ul class="stats">
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M4 17v-5h16v5M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 17v2m16-2v2"/></svg>2 guests</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg>1 room</li>
+              <li><svg class="i" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 12 0V3M12 16v5"/></svg>1 bath</li>
+            </ul>
+            <ul class="tags"><li>Terrace</li><li>Air conditioning</li><li>Wi-Fi</li></ul>
+            <div class="card-foot"><a class="btn btn-sm btn-full" href="#">Check dates</a><a class="link" href="#">Photos</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="amenities" style="padding-top:0">
+    <div class="wrap">
+      <div class="amen-band">
+        <p class="kicker" style="margin-bottom:6px">Included with every stay</p>
+        <h2>The basics, sorted</h2>
+        <div class="amen-grid">
+          <div><i><svg class="i" viewBox="0 0 24 24"><path d="M3 11h18M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M6 19v-2m12 2v-2M4 17h16v-4H4z"/></svg></i><div><b>Free parking</b><span>On site, right in front of the house</span></div></div>
+          <div><i><svg class="i" viewBox="0 0 24 24"><path d="M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0M8.5 15.5a6 6 0 0 1 7 0M12 19h.01"/></svg></i><div><b>Free Wi-Fi</b><span>In every apartment and on the terrace</span></div></div>
+          <div><i><svg class="i" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M6 6l12 12M18 6 6 18"/></svg></i><div><b>Air conditioning</b><span>In all seven stays</span></div></div>
+          <div><i><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16M6 20v-7h12v7M3 13l9-7 9 7"/></svg></i><div><b>Shared terrace</b><span>Under the vines, shaded all afternoon</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="location" style="padding-top:0">
+    <div class="wrap loc">
+      <div>
+        <p class="kicker">Location</p>
+        <h2>Finžgarjeva cesta 23 A, 4260 Bled</h2>
+        <p class="lede" style="margin-top:16px">Away from the lakeside traffic, with the car parked at the door — the easiest way to reach Vintgar, Bohinj and the Pokljuka plateau.</p>
+        <ul class="dist">
+          <li><span>Lake Bled shore</span><b>≈ 1.5 km</b></li>
+          <li><span>Bled bus station</span><b>≈ 1.3 km</b></li>
+          <li><span>Vintgar gorge</span><b>≈ 4 km</b></li>
+          <li><span>Ljubljana airport (LJU)</span><b>≈ 30 km</b></li>
+        </ul>
+        <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=46.367685,14.123031" target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+      <div class="loc-media"><img src="images/bled/property-0.jpg" alt="The house terrace" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:0">
+    <div class="wrap">
+      <p class="kicker">Good to know</p>
+      <h2 style="margin-bottom:10px">Questions we get a lot</h2>
+      <div class="faq">
+        <details open><summary>Do I book here or somewhere else?</summary><p>Here. Every stay links to our live availability calendar, and the booking is confirmed directly with us — the same rooms, without the platform commission.</p></details>
+        <details><summary>Is parking really free?</summary><p>Yes — private parking in front of the house, included with every apartment and room, no reservation needed.</p></details>
+        <details><summary>Can I cook?</summary><p>All five apartments have their own kitchen. The two rooms (Room B and Deluxe Room 33) don't, but they share the terrace and are a short walk from restaurants in Bled.</p></details>
+        <details><summary>What time can we arrive?</summary><p>Tell us your arrival time when you book and we'll be there to hand over the keys. Late arrivals are usually no problem — just message us.</p></details>
+        <details><summary>Which languages do you speak?</summary><p>Slovene, English and German.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <div>
+          <h2>Not sure which one fits?</h2>
+          <p>Tell us your dates and how many you are — we'll suggest the right stay and hold it for you.</p>
+        </div>
+        <div style="text-align:right">
+          <a class="tel" href="tel:+38631759164">+386 31 759 164</a>
+          <a class="btn" style="margin-top:14px" href="#">Send an enquiry</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Bled Vista Apartments · Finžgarjeva cesta 23 A, 4260 Bled, Slovenia</span>
+    <span>EN · <a href="#" style="color:var(--ink);font-weight:600">SL</a></span>
+  </div>
+</footer>
+<span class="proto-tag">Prototype C — Clear</span>
+
+<script>
+var chips=document.querySelectorAll('#chips .chip');
+var cards=document.querySelectorAll('#grid .card');
+chips.forEach(function(c){
+  c.addEventListener('click',function(){
+    chips.forEach(function(o){o.setAttribute('aria-pressed',String(o===c))});
+    var f=c.dataset.filter;
+    cards.forEach(function(card){
+      var show=f==='all'||card.dataset.tags.split(' ').indexOf(f)>-1;
+      card.style.display=show?'':'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

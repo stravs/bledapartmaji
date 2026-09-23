@@ -1,0 +1,30 @@
+{
+  "nastanitev-soba-b": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4f415f4e&title=0&source=web&width=full&unit=5f5455774e54514d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/nastanitev-soba-b.html"
+  },
+  "bled-vista-apartma-3": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4f415f4e&title=0&source=web&width=full&unit=5f544d304d7a634d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/bled-vista-apartma-3.html"
+  },
+  "bled-vista-apartma-1": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4f415f4e&title=0&source=web&width=full&unit=5f544d304d7a554d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/bled-vista-apartma-1.html"
+  },
+  "bled-vista-apartma-2": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4f415f4e&title=0&source=web&width=full&unit=5f544d304d7a594d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/bled-vista-apartma-2.html"
+  },
+  "deluxe-soba-33": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4e775f4e&title=0&source=web&width=full&unit=5f544d304d7a494d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/deluxe-soba-33.html"
+  },
+  "bled-vista-apartma-4": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4f415f4e&title=0&source=web&width=full&unit=5f544d304d7a674d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/bled-vista-apartma-4.html"
+  },
+  "apartma-sova": {
+    "bookingEmbed": "https://www.bentral.com/service/embed/booking.html?id=5f54637a4e775f4e&title=0&source=web&width=full&unit=5f544d304d7a414d&lang=sl&poweredby=0&key=7b6b15ca64d9e69c7eebaab59bc435a0",
+    "sourceUrl": "https://www.bledapartmaji.si/apartma-sova.html"
+  }
+}

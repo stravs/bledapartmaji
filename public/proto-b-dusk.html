@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bled Vista — Prototype B · Dusk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#101316; --panel:#171B1F; --panel-2:#1E2429;
+  --cream:#F3EEE6; --dim:#A8AEB2; --faint:#ffffff1a;
+  --ember:#D9884A; --ember-soft:#E9B98B;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--sans);font-size:16px;font-weight:300;line-height:1.65}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;margin:0;line-height:1.02;letter-spacing:-.01em}
+h1{font-size:clamp(52px,8.4vw,132px)}
+h2{font-size:clamp(38px,5.2vw,76px)}
+h3{font-size:clamp(26px,3vw,40px)}
+h4{font-size:clamp(24px,2.4vw,32px)}
+em{font-style:italic;color:var(--ember-soft)}
+p{margin:0 0 1.1em}
+.wrap{width:min(1280px,92vw);margin-inline:auto}
+.eyebrow{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--ember);font-weight:500;margin:0 0 22px}
+.dimmed{color:var(--dim)}
+.lede{font-size:clamp(17px,1.5vw,20px);line-height:1.7;color:#D9DCDE}
+
+/* header */
+.head{position:fixed;inset:0 0 auto;z-index:60;transition:.35s}
+.head .wrap{display:flex;align-items:center;gap:34px;height:72px}
+.head.solid{background:#101316EE;backdrop-filter:blur(12px);border-bottom:1px solid var(--faint)}
+.logo{margin-right:auto;font-family:var(--serif);font-size:23px;letter-spacing:.06em}
+.logo span{font-family:var(--sans);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);display:block;margin-top:2px;font-weight:400}
+.head nav{display:flex;gap:28px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#D4D8DA}
+.head nav a:hover{color:var(--ember-soft)}
+.pill{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:12px 20px;border-radius:999px;border:1px solid #ffffff38;transition:.25s}
+.pill:hover{background:var(--cream);color:var(--night);border-color:var(--cream)}
+.pill-ember{background:var(--ember);border-color:var(--ember);color:#160E07}
+.pill-ember:hover{background:var(--ember-soft);border-color:var(--ember-soft);color:#160E07}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(30px,5vw,60px);overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-bg img{transform:scale(1.06);filter:saturate(.92) contrast(1.04)}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0D1013CC 0%,#0D101340 32%,#0D101366 62%,#101316 98%)}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{max-width:12ch;text-shadow:0 2px 40px #00000059}
+.hero-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:34px;margin-top:26px}
+.hero-row p{max-width:40ch;margin:0;color:#DDE1E3}
+.scroll-hint{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:10px}
+
+/* booking bar */
+.bookbar{position:relative;z-index:3;margin-top:clamp(28px,4vw,46px);background:#F3EEE60F;border:1px solid var(--faint);backdrop-filter:blur(14px);border-radius:4px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1px;overflow:hidden}
+.bookbar label{display:block;padding:18px 24px;background:#131619BF}
+.bookbar span{display:block;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.bookbar b{font-family:var(--serif);font-size:21px;font-weight:400}
+.bookbar .go{background:var(--ember);color:#160E07;display:flex;align-items:center;gap:12px;padding:0 34px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;transition:.25s}
+.bookbar .go:hover{background:var(--ember-soft)}
+
+/* marquee strip */
+.strip{border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);display:flex;flex-wrap:wrap;gap:0}
+.strip div{flex:1 1 200px;padding:24px 28px;border-right:1px solid var(--faint);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.strip div b{display:block;font-family:var(--serif);font-size:24px;letter-spacing:0;text-transform:none;color:var(--cream);font-weight:400;margin-top:6px}
+.strip div:last-child{border-right:0}
+
+section{padding:clamp(70px,10vw,140px) 0}
+.statement{text-align:center;max-width:22ch;margin:0 auto}
+.statement + p{max-width:54ch;margin:30px auto 0;text-align:center;color:var(--dim)}
+
+/* feature panels */
+.panels{display:grid;gap:clamp(16px,2vw,26px)}
+.panel{position:relative;min-height:clamp(380px,52vw,620px);overflow:hidden;border-radius:3px;display:flex;align-items:flex-end}
+.panel img{position:absolute;inset:0;transition:transform .9s cubic-bezier(.2,.7,.3,1)}
+.panel:hover img{transform:scale(1.04)}
+.panel::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0D101300 35%,#0D1013D9 100%)}
+.panel-body{position:relative;z-index:2;padding:clamp(26px,3vw,42px);width:100%;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px}
+.panel-body p{margin:0;color:#D8DCDE;max-width:40ch}
+.panel-meta{display:flex;gap:22px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+.panels-2{grid-template-columns:1fr 1fr}
+
+/* stays table */
+.tbl{width:100%;border-collapse:collapse;margin-top:14px}
+.tbl th{text-align:left;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);font-weight:500;padding:0 18px 16px 0;border-bottom:1px solid var(--faint)}
+.tbl td{padding:22px 18px 22px 0;border-bottom:1px solid var(--faint);vertical-align:middle;color:var(--dim);font-size:14px}
+.tbl tr:hover td{background:#ffffff06}
+.tbl .name{font-family:var(--serif);font-size:26px;color:var(--cream);white-space:nowrap}
+.tbl .thumb{width:96px}
+.tbl .thumb div{width:96px;aspect-ratio:4/3;overflow:hidden;border-radius:2px;background:var(--panel-2)}
+.tbl .no-ph{display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#7C838A;text-align:center;padding:6px}
+.tbl td:last-child{text-align:right;padding-right:0}
+.tbl .book{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);white-space:nowrap;border-bottom:1px solid #D9884A55;padding-bottom:3px}
+.tbl .book:hover{color:var(--ember-soft);border-color:var(--ember-soft)}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,6vw,90px);align-items:center}
+.media{aspect-ratio:4/5;overflow:hidden;border-radius:3px}
+.list{list-style:none;padding:0;margin:26px 0 0}
+.list li{display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-top:1px solid var(--faint);font-size:14px;color:var(--dim)}
+.list b{font-family:var(--serif);font-size:20px;color:var(--cream);font-weight:400}
+
+/* contact */
+.contact{background:var(--panel);border-radius:4px;padding:clamp(34px,5vw,64px);display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(30px,5vw,70px);align-items:center}
+.phone{font-family:var(--serif);font-size:clamp(30px,4vw,52px);display:block;margin:10px 0 24px}
+.phone:hover{color:var(--ember-soft)}
+address{font-style:normal;color:var(--dim);font-size:15px;line-height:1.9}
+
+footer{border-top:1px solid var(--faint);padding:40px 0 60px;font-size:11.5px;letter-spacing:.1em;color:#767D83}
+footer .wrap{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+.proto-tag{position:fixed;left:16px;bottom:16px;z-index:70;background:var(--ember);color:#160E07;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;padding:9px 14px;border-radius:999px;font-weight:600}
+
+@media(max-width:980px){
+  .head nav{display:none}
+  .bookbar{grid-template-columns:1fr 1fr}
+  .bookbar .go{grid-column:1/-1;justify-content:center;padding:20px}
+  .panels-2,.split,.contact{grid-template-columns:1fr}
+  .media{aspect-ratio:4/3}
+  .tbl .thumb,.tbl .hide-s{display:none}
+  .tbl .name{font-size:21px;white-space:normal}
+  .tbl td,.tbl th{padding-right:10px}
+}
+</style>
+</head>
+<body>
+<header class="head" id="head">
+  <div class="wrap">
+    <a class="logo" href="#top">Bled Vista<span>Apartments</span></a>
+    <nav><a href="#stays">Stays</a><a href="#house">The house</a><a href="#bled">Bled</a><a href="#contact">Contact</a></nav>
+    <span style="font-size:11px;letter-spacing:.18em;color:#A8AEB2">EN · <a href="#" style="color:#F3EEE6">SL</a></span>
+    <a class="pill pill-ember" href="#stays">Book direct</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-bg"><img src="images/bled/header.jpg" alt="Lake Bled at dusk" fetchpriority="high"></div>
+    <div class="wrap">
+      <p class="eyebrow">Bled · Slovenia</p>
+      <h1>The lake keeps <em>its best hour</em> for late.</h1>
+      <div class="hero-row">
+        <p>Seven apartments and rooms on the quiet side of Bled. Own entrance, own kitchen, a terrace under the vines — and the Julian Alps out the window.</p>
+        <span class="scroll-hint">Scroll <span aria-hidden="true">↓</span></span>
+      </div>
+      <form class="bookbar" onsubmit="return false">
+        <label><span>Arrival</span><b>Fri 3 Jul</b></label>
+        <label><span>Departure</span><b>Mon 6 Jul</b></label>
+        <label><span>Guests</span><b>2 adults</b></label>
+        <button class="go" type="submit">Check availability <span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="strip">
+      <div>Stays<b>7 rooms &amp; apartments</b></div>
+      <div>Parking<b>Free, on site</b></div>
+      <div>To the lake<b>≈ 1.5 km</b></div>
+      <div>Booking<b>Direct, no fee</b></div>
+    </div>
+  </div>
+
+  <section id="house">
+    <div class="wrap">
+      <h2 class="statement">Small, quiet, and <em>entirely yours.</em></h2>
+      <p>Four apartments upstairs, three rooms at ground level, one vine-covered terrace everyone shares at breakfast. We live here too — ask us where to swim.</p>
+    </div>
+    <div class="wrap" style="margin-top:clamp(44px,6vw,80px)">
+      <div class="panels panels-2">
+        <article class="panel">
+          <img src="images/bled/property-0.jpg" alt="Terrace under the vines" loading="lazy">
+          <div class="panel-body"><div><div class="panel-meta"><span>The terrace</span><span>Shared</span></div><h3>Shade, all afternoon</h3></div></div>
+        </article>
+        <article class="panel">
+          <img src="images/bled/property-1.jpg" alt="Kitchen corner" loading="lazy">
+          <div class="panel-body"><div><div class="panel-meta"><span>The apartments</span><span>Self-catering</span></div><h3>A kitchen of your own</h3></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="stays" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Where you'll sleep</p>
+      <h2>Seven ways to <em>stay.</em></h2>
+
+      <div class="panels" style="margin-top:clamp(40px,5vw,66px)">
+        <article class="panel">
+          <img src="images/bled/bled-vista-apartma-2-0.jpg" alt="Apartment 2" loading="lazy">
+          <div class="panel-body">
+            <div>
+              <div class="panel-meta"><span>01 · Bled Vista</span><span>37 m²</span><span>3 guests</span><span>Balcony 10 m²</span></div>
+              <h3>Apartment 2</h3>
+              <p>Our largest: separate bedroom, a kitchen you can cook in, and a balcony over the garden.</p>
+            </div>
+            <a class="pill" href="#">Check dates</a>
+          </div>
+        </article>
+        <div class="panels panels-2">
+          <article class="panel">
+            <img src="images/bled/bled-vista-apartma-1-0.jpg" alt="Apartment 1" loading="lazy">
+            <div class="panel-body">
+              <div>
+                <div class="panel-meta"><span>02 · Bled Vista</span><span>29 m²</span><span>2 guests</span></div>
+                <h3>Apartment 1</h3>
+                <p>One bedroom, full kitchen, a balcony for the first coffee.</p>
+              </div>
+              <a class="pill" href="#">Check dates</a>
+            </div>
+          </article>
+          <article class="panel">
+            <img src="images/bled/apartma-sova-0.jpg" alt="Sova terrace" loading="lazy">
+            <div class="panel-body">
+              <div>
+                <div class="panel-meta"><span>03 · Sova</span><span>24 m²</span><span>2+1 guests</span></div>
+                <h3>Apartment Sova</h3>
+                <p>Ground floor, private entrance, its own terrace around the corner.</p>
+              </div>
+              <a class="pill" href="#">Check dates</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div style="margin-top:clamp(56px,7vw,96px)">
+        <p class="eyebrow">Every stay, side by side</p>
+        <table class="tbl">
+          <thead><tr><th class="thumb"></th><th>Stay</th><th class="hide-s">Size</th><th>Guests</th><th class="hide-s">Outside</th><th class="hide-s">Floor</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="thumb"><div><img src="images/bled/bled-vista-apartma-1-0.jpg" alt="" loading="lazy"></div></td><td class="name">Apartment 1</td><td class="hide-s">29 m²</td><td>2</td><td class="hide-s">Balcony 5 m²</td><td class="hide-s">First</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div><img src="images/bled/bled-vista-apartma-2-0.jpg" alt="" loading="lazy"></div></td><td class="name">Apartment 2</td><td class="hide-s">37 m²</td><td>3</td><td class="hide-s">Balcony 10 m²</td><td class="hide-s">First</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div><img src="images/bled/bled-vista-apartma-3-0.jpg" alt="" loading="lazy"></div></td><td class="name">Apartment 3</td><td class="hide-s">37 m²</td><td>3</td><td class="hide-s">Balcony 7 m²</td><td class="hide-s">First</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div><img src="images/bled/bled-vista-apartma-4-0.jpg" alt="" loading="lazy"></div></td><td class="name">Apartment 4</td><td class="hide-s">23 m²</td><td>2</td><td class="hide-s">Shared terrace</td><td class="hide-s">First</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div class="no-ph">Photos<br>on request</div></td><td class="name">Room B</td><td class="hide-s">12 m²</td><td>2</td><td class="hide-s">Shared 16 m²</td><td class="hide-s">Ground</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div><img src="images/bled/apartma-sova-0.jpg" alt="" loading="lazy"></div></td><td class="name">Apartment Sova</td><td class="hide-s">24 m²</td><td>2+1</td><td class="hide-s">Terrace 15 m²</td><td class="hide-s">Ground</td><td><a class="book" href="#">Book →</a></td></tr>
+            <tr><td class="thumb"><div><img src="images/bled/deluxe-soba-33-0.jpg" alt="" loading="lazy"></div></td><td class="name">Deluxe Room 33</td><td class="hide-s">11 m²</td><td>2</td><td class="hide-s">Terrace 4 m²</td><td class="hide-s">Ground</td><td><a class="book" href="#">Book →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="bled" style="background:var(--panel)">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">The valley</p>
+        <h2>Six kilometres of shoreline, <em>and nobody on it at seven.</em></h2>
+        <p class="lede" style="margin-top:26px">Row out to the island. Walk the Vintgar boardwalk before the buses arrive. Drive twenty minutes to Bohinj and swim where the water is colder and emptier.</p>
+        <ul class="list">
+          <li><span>Lake Bled shore</span><b>≈ 1.5 km</b></li>
+          <li><span>Vintgar gorge</span><b>≈ 4 km</b></li>
+          <li><span>Lake Bohinj</span><b>≈ 27 km</b></li>
+          <li><span>Ljubljana airport</span><b>≈ 30 km</b></li>
+        </ul>
+      </div>
+      <div class="media"><img src="images/bled/header.jpg" alt="Lake Bled" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <p class="eyebrow">Book direct</p>
+          <h2>Ask us anything <em>before you book.</em></h2>
+          <p class="dimmed" style="margin-top:22px;max-width:44ch">Best rate, no booking fee, and a person on the other end of the phone. We answer in Slovene, English and German.</p>
+          <a class="pill pill-ember" href="#" style="margin-top:8px">Send an enquiry</a>
+        </div>
+        <div>
+          <p class="eyebrow" style="margin-bottom:0">Call the hosts</p>
+          <a class="phone" href="tel:+38631759164">+386 31 759 164</a>
+          <address>Bled Vista Apartments<br>Finžgarjeva cesta 23 A<br>4260 Bled, Slovenia</address>
+          <a class="book" style="display:inline-block;margin-top:18px" href="https://www.google.com/maps/search/?api=1&amp;query=46.367685,14.123031" target="_blank" rel="noopener">Open in Maps →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Bled Vista Apartments</span><span>Finžgarjeva cesta 23 A · 4260 Bled · Slovenia</span></div>
+</footer>
+<span class="proto-tag">Prototype B — Dusk</span>
+
+<script>
+var head=document.getElementById('head');
+var onScroll=function(){head.classList.toggle('solid',window.scrollY>60)};
+onScroll();addEventListener('scroll',onScroll,{passive:true});
+</script>
+</body>
+</html>
