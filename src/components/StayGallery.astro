@@ -15,7 +15,7 @@ const firstPhoto=optimized[0]!;
 ---
 <div class="stay-gallery" data-gallery>
   <div class="gallery-stage">
-    <a class="stay-main-photo" href={firstPhoto.full.src} aria-label={t(`Open ${title} gallery`,`Odpri galerijo: ${title}`)}><Image src={firstPhoto.source} width={960} widths={[400,640,960]} sizes={gallerySizes} format="webp" alt={`${title} — ${t('photo','fotografija')} 1`} loading="lazy"/><span class="gallery-expand" aria-hidden="true">↗</span></a>
+    <a class="stay-main-photo" href={firstPhoto.full.src} aria-label={t(`Open ${title} gallery`,`Odpri galerijo: ${title}`)}><Image src={firstPhoto.source} width={960} widths={[400,640,960]} sizes={gallerySizes} format="webp" alt={`${title} — ${t('photo','fotografija')} 1`} loading="lazy"/></a>
     <button class="gallery-arrow gallery-prev" type="button" data-prev aria-label={t('Previous photo','Prejšnja fotografija')}>‹</button>
     <button class="gallery-arrow gallery-next" type="button" data-next aria-label={t('Next photo','Naslednja fotografija')}>›</button>
   </div>
